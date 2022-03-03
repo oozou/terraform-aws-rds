@@ -57,7 +57,7 @@ resource "aws_db_instance" "this" {
   maintenance_window          = var.maintenance_window
   skip_final_snapshot         = var.skip_final_snapshot
   copy_tags_to_snapshot       = var.copy_tags_to_snapshot
-  final_snapshot_identifier   = var.final_snapshot_identifier
+  final_snapshot_identifier   = local.final_snapshot_name
 
   # Database (logging) defines
   enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
