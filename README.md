@@ -6,14 +6,14 @@
 module "rds_postgres" {
   source = "<your_select_source>"
 
-  prefix = "<customer_name>"
-  name  = "<paas_name>"
+  prefix      = "<customer_name>"
+  name        = "<paas_name>"
   environment = "dev"
 
   #db instance (server)
-  engine            = "postgres"
-  engine_version    = "14.1"
-  instance_class    = "db.t3.small"
+  engine         = "postgres"
+  engine_version = "14.1"
+  instance_class = "db.t3.small"
 
   #db instance (storage)
   allocated_storage = 20
@@ -30,22 +30,53 @@ module "rds_postgres" {
   backup_retention_period = 7
 
   #db instance (additional)
-  skip_final_snapshot  = true
-  deletion_protection  = false
+  skip_final_snapshot = true
+  deletion_protection = false
 
   #security group
-  vpc_id               = "vpc-0736560f271b12fa3"
+  vpc_id = "vpc-0736560f271b12fa3"
+  security_group_ingress_rules = [{
+    cidr_blocks              = ["0.0.0.0/0"]
+    description              = "allow from any"
+    from_port                = 5432
+    is_cidr                  = true
+    is_sg                    = false
+    protocol                 = "tcp"
+    source_security_group_id = ""
+    to_port                  = 5432
+    },
+    {
+      cidr_blocks              = ["0.0.0.0/0"]
+      description              = "allow from any"
+      from_port                = 80
+      is_cidr                  = false
+      is_sg                    = true
+      protocol                 = "tcp"
+      source_security_group_id = "<sg-id>"
+      to_port                  = 80
+  }]
+
+  security_group_egress_rules = [{
+    cidr_blocks              = ["0.0.0.0/0"]
+    description              = "allow to any"
+    from_port                = -1
+    is_cidr                  = true
+    is_sg                    = false
+    protocol                 = "all"
+    source_security_group_id = ""
+    to_port                  = -1
+  }]
 
   #parameter group
   family = postgres14
   parameters = [{
-    name = timezone
-    value = Asia/Bangkok
+    name         = timezone
+    value        = Asia / Bangkok
     apply_method = immediate
   }]
 
   #subnet group
-  subnet_ids           = ["subnet-09ef78e7234432ce6", "subnet-0b8e065bee1ab6d50", "subnet-0e0c33e9873deaff8"]
+  subnet_ids = ["subnet-09ef78e7234432ce6", "subnet-0b8e065bee1ab6d50", "subnet-0e0c33e9873deaff8"]
 
   custom_tags = {
     "Workspace" : "<workspace_name>"

@@ -107,5 +107,10 @@ output "db_instance_master_password" {
 
 output "db_security_group_id" {
   description = "Security group id for the rds."
-  value       = try(aws_security_group.this[0].id, "")
+  value       = try(aws_security_group.cluster[0].id, "")
+}
+
+output "db_client_security_group_id" {
+  description = "Security group id for the rds client."
+  value       = try(aws_security_group.client.id, "")
 }

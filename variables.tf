@@ -259,15 +259,33 @@ variable "vpc_id" {
 }
 
 variable "security_group_ingress_rules" {
-  description = "Map of ingress and any specific/overriding attributes to be created"
-  type        = any
-  default     = {}
+  type = list(object({
+    from_port                = number
+    to_port                  = number
+    protocol                 = string
+    is_cidr                  = bool
+    cidr_blocks              = list(string)
+    is_sg                    = bool
+    source_security_group_id = string
+    description              = string
+  }))
+  description = "List of objects describing the authorization rules for the client vpn"
+  default     = []
 }
 
 variable "security_group_egress_rules" {
-  description = "A map of security group egress rule defintions to add to the security group created"
-  type        = any
-  default     = {}
+  type = list(object({
+    from_port                = number
+    to_port                  = number
+    protocol                 = string
+    is_cidr                  = bool
+    cidr_blocks              = list(string)
+    is_sg                    = bool
+    source_security_group_id = string
+    description              = string
+  }))
+  description = "List of objects describing the authorization rules for the client vpn"
+  default     = []
 }
 
 /* -------------------------------------------------------------------------- */
