@@ -210,11 +210,11 @@ variable "apply_immediately" {
   default     = false
 }
 
-variable "final_snapshot_identifier" {
-  description = "The name of your final DB snapshot when this DB instance is deleted."
-  type        = string
-  default     = null
-}
+# variable "final_snapshot_identifier" {
+#   description = "The name of your final DB snapshot when this DB instance is deleted."
+#   type        = string
+#   default     = null
+# }
 
 variable "skip_final_snapshot" {
   description = "Determines whether a final DB snapshot is created before the DB instance is deleted. If true is specified, no DBSnapshot is created. If false is specified, a DB snapshot is created before the DB instance is deleted, using the value from final_snapshot_identifier"
