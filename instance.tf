@@ -11,7 +11,6 @@ resource "aws_db_instance" "this" {
   engine         = var.engine
   engine_version = var.engine_version
   instance_class = var.instance_class
-  license_model  = var.license_model
 
   # Database (storage) defines
   allocated_storage = var.allocated_storage

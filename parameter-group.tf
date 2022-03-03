@@ -2,7 +2,7 @@
 /*                           AWS_DB_PARAMETER_GROUP                           */
 /* -------------------------------------------------------------------------- */
 resource "aws_db_parameter_group" "this" {
-  count = var.is_create_db_instance && var.is_create_parameter_group_name ? 1 : 0
+  count = var.is_create_db_instance && var.is_create_parameter_group ? 1 : 0
 
   name        = "${local.identifier}-param"
   description = format("Database parameter group for %s", local.identifier)

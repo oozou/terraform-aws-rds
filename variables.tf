@@ -2,7 +2,7 @@
 /*                                  GENERICS                                  */
 /* -------------------------------------------------------------------------- */
 variable "prefix" {
-  description = "Prefix used as a prefix (customer name)."
+  description = "The prefix name of customer to be displayed in AWS console and resource."
   type        = string
 }
 
@@ -48,12 +48,6 @@ variable "engine_version" {
 variable "instance_class" {
   description = "The instance type of the RDS instance"
   type        = string
-}
-
-variable "license_model" {
-  description = "License model information for this DB instance. Optional, but required for some DB engines, i.e. Oracle SE1"
-  type        = string
-  default     = ""
 }
 
 variable "timeouts" {
@@ -188,6 +182,12 @@ variable "backup_window" {
   default     = null
 }
 
+variable "maintenance_window" {
+  description = "The window to perform maintenance in. Syntax: 'ddd:hh24:mi-ddd:hh24:mi'. Eg: 'Mon:00:00-Mon:03:00'"
+  type        = string
+  default     = null
+}
+
 
 /* -------------------------------------------------------------------------- */
 /*                   AWS_DB_INSTACE (additional config)                       */
@@ -228,10 +228,10 @@ variable "copy_tags_to_snapshot" {
   default     = false
 }
 
-variable "maintenance_window" {
-  description = "The window to perform maintenance in. Syntax: 'ddd:hh24:mi-ddd:hh24:mi'. Eg: 'Mon:00:00-Mon:03:00'"
-  type        = string
-  default     = null
+variable "deletion_protection" {
+  description = "The database can't be deleted when this value is set to true."
+  type        = bool
+  default     = false
 }
 
 /* -------------------------------------------------------------------------- */
@@ -242,12 +242,6 @@ variable "enabled_cloudwatch_logs_exports" {
   description = "List of log types to enable for exporting to CloudWatch logs. If omitted, no logs will be exported. Valid values (depending on engine): MySQL and MariaDB: audit, error, general, slowquery. PostgreSQL: postgresql, upgrade. MSSQL: agent , error. Oracle: alert, audit, listener, trace."
   type        = list(string)
   default     = ["postgresql", "upgrade"]
-}
-
-variable "deletion_protection" {
-  description = "The database can't be deleted when this value is set to true."
-  type        = bool
-  default     = false
 }
 
 /* -------------------------------------------------------------------------- */
@@ -279,14 +273,14 @@ variable "security_group_egress_rules" {
 /* -------------------------------------------------------------------------- */
 /*                            PARAMETER_GROUP_NAME                            */
 /* -------------------------------------------------------------------------- */
-variable "is_create_parameter_group_name" {
+variable "is_create_parameter_group" {
   description = "Whether to create parameter group or not"
   type        = bool
   default     = true
 }
 
 variable "db_parameter_group_name_id" {
-  description = "(optional) if is_create_parameter_group_name is false, have to input exised parameter group id."
+  description = "(optional) describe your variable"
   type        = string
   default     = null
 }
@@ -305,7 +299,7 @@ variable "parameters" {
 /* -------------------------------------------------------------------------- */
 /*                               DB_SUBNET_GROUP                              */
 /* -------------------------------------------------------------------------- */
-variable "is_create_db_subnet_group_name" {
+variable "is_create_db_subnet_group" {
   description = "Whether to create db subnet group or not"
   type        = bool
   default     = true
