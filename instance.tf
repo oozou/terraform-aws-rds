@@ -29,7 +29,7 @@ resource "aws_db_instance" "this" {
   snapshot_identifier = var.snapshot_identifier
 
   # Database (networking) defines
-  vpc_security_group_ids = [try(aws_security_group.this[0].id, "")]
+  vpc_security_group_ids = [try(aws_security_group.cluster[0].id, "")]
   availability_zone      = var.availability_zone
   multi_az               = var.multi_az
   publicly_accessible    = var.publicly_accessible
