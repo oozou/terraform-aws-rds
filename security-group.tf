@@ -11,6 +11,21 @@ resource "aws_security_group" "cluster" {
   tags = merge(local.tags, { "Name" : "${local.identifier}-sg" })
 }
 
+/* -------------------------------------------------------------------------- */
+/*                               SECURITY_GROUP_CLIENT                        */
+/* -------------------------------------------------------------------------- */
+resource "aws_security_group" "client" {
+  name        = "${local.identifier}-client-sg"
+  description = "Security group for the ${local.identifier} postgresql client"
+  vpc_id      = var.vpc_id
+
+  tags = merge(local.tags, { "Name" : "${local.identifier}-client-sg" })
+}
+
+/* -------------------------------------------------------------------------- */
+/*                          SECURITY_GROUP_RULE_CLUSTER                       */
+/* -------------------------------------------------------------------------- */
+
 # Security group rule for incoming to cluster connections (allow only from client)
 resource "aws_security_group_rule" "from_client" {
   type              = "ingress"
@@ -23,16 +38,20 @@ resource "aws_security_group_rule" "from_client" {
   source_security_group_id = aws_security_group.client.id
 }
 
-/* -------------------------------------------------------------------------- */
-/*                               SECURITY_GROUP_CLIENT                        */
-/* -------------------------------------------------------------------------- */
-resource "aws_security_group" "client" {
-  name        = "${local.identifier}-client-sg"
-  description = "Security group for the ${local.identifier} postgresql client"
-  vpc_id      = var.vpc_id
+resource "aws_security_group_rule" "to_internet" {
+  type              = "egress"
+  from_port         = -1
+  to_port           = -1
+  protocol          = "all"
+  security_group_id = local.rds_security_group_id
+  description       = "Egress rule for allow traffic to internet"
 
-  tags = merge(local.tags, { "Name" : "${local.identifier}-client-sg" })
+  cidr_blocks = ["0.0.0.0/0"]
 }
+
+/* -------------------------------------------------------------------------- */
+/*                          SECURITY_GROUP_RULE_CLIENT                        */
+/* -------------------------------------------------------------------------- */
 
 # Security group rule for outgoing to cluster connections
 resource "aws_security_group_rule" "to_cluster" {

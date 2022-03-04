@@ -1,4 +1,4 @@
-# terraform-aws-rds-postgresql
+# terraform-aws-rds
 
 ## Usage
 
