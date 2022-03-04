@@ -18,8 +18,8 @@ resource "aws_security_group_rule" "ingress" {
   from_port                = var.security_group_ingress_rules[count.index].from_port
   to_port                  = var.security_group_ingress_rules[count.index].to_port
   protocol                 = var.security_group_ingress_rules[count.index].protocol
-  cidr_blocks              = var.security_group_ingress_rules[count.index].is_cidr ? var.security_group_ingress_rules[count.index].cidr_blocks : null
-  source_security_group_id = var.security_group_ingress_rules[count.index].is_sg ? var.security_group_ingress_rules[count.index].source_security_group_id : null
+  cidr_blocks              = length(var.security_group_ingress_rules[count.index].source_security_group_id) > 0 ? null : var.security_group_ingress_rules[count.index].cidr_blocks
+  source_security_group_id = length(var.security_group_ingress_rules[count.index].cidr_blocks) > 0 ? null : var.security_group_ingress_rules[count.index].source_security_group_id
   security_group_id        = local.rds_security_group_id
   description              = var.security_group_ingress_rules[count.index].description
 
@@ -43,8 +43,8 @@ resource "aws_security_group_rule" "egress" {
   from_port                = var.security_group_egress_rules[count.index].from_port
   to_port                  = var.security_group_egress_rules[count.index].to_port
   protocol                 = var.security_group_egress_rules[count.index].protocol
-  cidr_blocks              = var.security_group_egress_rules[count.index].is_cidr ? var.security_group_egress_rules[count.index].cidr_blocks : null
-  source_security_group_id = var.security_group_egress_rules[count.index].is_sg ? var.security_group_egress_rules[count.index].source_security_group_id : null
+  cidr_blocks              = length(var.security_group_ingress_rules[count.index].source_security_group_id) > 0 ? null : var.security_group_ingress_rules[count.index].cidr_blocks
+  source_security_group_id = length(var.security_group_ingress_rules[count.index].cidr_blocks) > 0 ? null : var.security_group_ingress_rules[count.index].source_security_group_id
   security_group_id        = local.rds_security_group_id
   description              = var.security_group_egress_rules[count.index].description
 }

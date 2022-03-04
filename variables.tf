@@ -37,17 +37,34 @@ variable "is_create_db_instance" {
 variable "engine" {
   description = "The database engine to use"
   type        = string
-  default     = "postgres"
 }
 
 variable "engine_version" {
-  description = "(Optional) The engine version to use. If auto_minor_version_upgrade is enabled, you can provide a prefix of the version such as 5.7 (for 5.7.10). The actual engine version used is returned in the attribute engine_version_actual, defined below."
+  description = "The engine version to use. If auto_minor_version_upgrade is enabled, you can provide a prefix of the version such as 5.7 (for 5.7.10). The actual engine version used is returned in the attribute engine_version_actual, defined below."
   type        = string
 }
 
 variable "instance_class" {
   description = "The instance type of the RDS instance"
   type        = string
+}
+
+variable "license_model" {
+  type        = string
+  description = "License model for this DB. Optional, but required for some DB Engines. Valid values: license-included | bring-your-own-license | general-public-license"
+  default     = ""
+}
+
+variable "ca_cert_identifier" {
+  type        = string
+  description = "The identifier of the CA certificate for the DB instance"
+  default     = null
+}
+
+variable "timezone" {
+  description = "(Optional) Time zone of the DB instance. timezone is currently only supported by Microsoft SQL Server. The timezone can only be set on creation. See MSSQL User Guide for more information."
+  type        = string
+  default     = ""
 }
 
 variable "timeouts" {
@@ -81,6 +98,12 @@ variable "iops" {
   default     = 0
 }
 
+variable "max_allocated_storage" {
+  description = "(Optional) When configured, the upper limit to which Amazon RDS can automatically scale the storage of the DB instance. Must be greater than or equal to allocated_storage or leave as default to disable Storage Autoscaling"
+  type        = number
+  default     = 0
+}
+
 /* ------------------------------- encryption ------------------------------- */
 variable "storage_encrypted" {
   description = "Specifies whether the DB instance is encrypted"
@@ -109,9 +132,8 @@ variable "password" {
 }
 
 variable "port" {
-  description = "The port on which the DB accepts connections"
+  description = "The port on which the DB accepts connections. Mostly, postgres=5432, mssql=1433, mariadb=3306"
   type        = number
-  default     = 5432
 }
 
 variable "iam_database_authentication_enabled" {
@@ -155,6 +177,12 @@ variable "publicly_accessible" {
 /*                       AWS_DB_INSTACE (monitoring)                          */
 /* -------------------------------------------------------------------------- */
 
+variable "is_enable_monitoring" {
+  description = "Whether to enable enhanced monitoring."
+  type        = bool
+  default     = false
+}
+
 variable "monitoring_interval" {
   description = "The interval, in seconds, between points when Enhanced Monitoring metrics are collected for the DB instance. To disable collecting Enhanced Monitoring metrics, specify 0. The default is 0. Valid Values: 0, 1, 5, 10, 15, 30, 60."
   type        = number
@@ -162,16 +190,40 @@ variable "monitoring_interval" {
 }
 
 variable "monitoring_role_arn" {
-  description = "The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to CloudWatch Logs. Must be specified if monitoring_interval is non-zero."
+  description = "The ARN for the IAM role that permits RDS to send enhanced monitoring metrics to CloudWatch Logs. Must be specified if monitoring_interval is non-zero. If unspecified, terraform will create new role."
   type        = string
   default     = ""
+}
+
+variable "performance_insights_enabled" {
+  description = "(Optional) whether Performance Insights are enabled."
+  type        = bool
+  default     = false
+}
+
+variable "performance_insights_use_cmk" {
+  description = "(Optional) whether Performance Insights encryption using customer managed key(KMS)."
+  type        = bool
+  default     = false
+}
+
+variable "performance_insights_kms_key_id" {
+  description = "The ARN for the KMS key to encrypt Performance Insights data. Once KMS key is set, it can never be changed. If performance_insights_enabled is set to true and performance_insights_use_cmk is set to false and performance_insights_kms_key_id is not specified the default KMS key in your account will be used"
+  type        = string
+  default     = null
+}
+
+variable "performance_insights_retention_period" {
+  type        = number
+  default     = null
+  description = "The amount of time in days to retain Performance Insights data. Either 7 (7 days) or 731 (2 years)."
 }
 
 /* -------------------------------------------------------------------------- */
 /*                         AWS_DB_INSTACE (backup)                            */
 /* -------------------------------------------------------------------------- */
 variable "backup_retention_period" {
-  description = "The days to retain backups for"
+  description = "The days to retain backups for. Mostly, for non-production is 7 days and production is 30 days. Default to 7 days"
   type        = number
   default     = 7
 }
@@ -210,12 +262,6 @@ variable "apply_immediately" {
   default     = false
 }
 
-# variable "final_snapshot_identifier" {
-#   description = "The name of your final DB snapshot when this DB instance is deleted."
-#   type        = string
-#   default     = null
-# }
-
 variable "skip_final_snapshot" {
   description = "Determines whether a final DB snapshot is created before the DB instance is deleted. If true is specified, no DBSnapshot is created. If false is specified, a DB snapshot is created before the DB instance is deleted, using the value from final_snapshot_identifier"
   type        = bool
@@ -225,7 +271,7 @@ variable "skip_final_snapshot" {
 variable "copy_tags_to_snapshot" {
   description = "On delete, copy all Instance tags to the final snapshot (if final_snapshot_identifier is specified)"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "deletion_protection" {
@@ -241,7 +287,7 @@ variable "deletion_protection" {
 variable "enabled_cloudwatch_logs_exports" {
   description = "List of log types to enable for exporting to CloudWatch logs. If omitted, no logs will be exported. Valid values (depending on engine): MySQL and MariaDB: audit, error, general, slowquery. PostgreSQL: postgresql, upgrade. MSSQL: agent , error. Oracle: alert, audit, listener, trace."
   type        = list(string)
-  default     = ["postgresql", "upgrade"]
+  default     = []
 }
 
 /* -------------------------------------------------------------------------- */
@@ -263,9 +309,7 @@ variable "security_group_ingress_rules" {
     from_port                = number
     to_port                  = number
     protocol                 = string
-    is_cidr                  = bool
     cidr_blocks              = list(string)
-    is_sg                    = bool
     source_security_group_id = string
     description              = string
   }))
@@ -278,9 +322,7 @@ variable "security_group_egress_rules" {
     from_port                = number
     to_port                  = number
     protocol                 = string
-    is_cidr                  = bool
     cidr_blocks              = list(string)
-    is_sg                    = bool
     source_security_group_id = string
     description              = string
   }))
@@ -298,7 +340,7 @@ variable "is_create_parameter_group" {
 }
 
 variable "db_parameter_group_name_id" {
-  description = "(optional) describe your variable"
+  description = "(optional) if is_create_parameter_group is false, input existed parameter group name id. If unspecified, the default parameter group will be used."
   type        = string
   default     = null
 }
@@ -310,8 +352,12 @@ variable "family" {
 
 variable "parameters" {
   description = "(Optional) A list of DB parameter maps to apply"
-  type        = list(map(string))
-  default     = []
+  type = list(object({
+    apply_method = string
+    name         = string
+    value        = string
+  }))
+  default = []
 }
 
 /* -------------------------------------------------------------------------- */
@@ -324,7 +370,7 @@ variable "is_create_db_subnet_group" {
 }
 
 variable "db_subnet_group_name" {
-  description = "Name of DB subnet group. DB instance will be created in the VPC associated with the DB subnet group. If unspecified, will be created in the default VPC"
+  description = "(optional) if is_create_db_subnet_group is false, input existed subnet group name. If unspecified, the default vpc subnet group will be used."
   type        = string
   default     = ""
 }
@@ -338,14 +384,45 @@ variable "subnet_ids" {
 # /* -------------------------------------------------------------------------- */
 # /*                               DB_OPTION_GROUP                              */
 # /* -------------------------------------------------------------------------- */
-# variable "is_create_option_group_name" {
-#   description = "Whether to create db option group or not"
-#   type        = bool
-#   default     = true
-# }
+variable "is_create_option_group" {
+  description = "Whether to create db option group or not (Require for some DB engine)"
+  type        = bool
+  default     = false
+}
 
-# variable "db_option_engine_name" {
-#   description = "Specifies the name of the engine that this option group should be associated with."
-#   type        = string
-#   default     = "postgres"
-# }
+variable "db_option_group_name" {
+  description = "(optional) if is_create_option_group is false, input existed option group name. If unspecified, the default option group will be used."
+  type        = string
+  default     = ""
+}
+
+variable "db_option_engine_name" {
+  description = "Specifies the name of the engine that this option group should be associated with."
+  type        = string
+  default     = ""
+}
+
+variable "db_option_major_engine_version" {
+  type        = string
+  description = "Database MAJOR engine version, depends on engine type"
+  default     = ""
+  # https://docs.aws.amazon.com/cli/latest/reference/rds/create-option-group.html
+}
+
+variable "db_options" {
+  type = list(object({
+    db_security_group_memberships  = list(string)
+    option_name                    = string
+    port                           = number
+    version                        = string
+    vpc_security_group_memberships = list(string)
+
+    option_settings = list(object({
+      name  = string
+      value = string
+    }))
+  }))
+
+  default     = []
+  description = "A list of DB options to apply with an option group. Depends on DB engine"
+}
