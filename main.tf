@@ -8,16 +8,20 @@ resource "aws_db_instance" "this" {
   identifier = local.identifier
 
   # Database (server) defines
-  engine         = var.engine
-  engine_version = var.engine_version
-  instance_class = var.instance_class
+  engine             = var.engine
+  engine_version     = var.engine_version
+  instance_class     = var.instance_class
+  license_model      = var.license_model      #oracle, mssql
+  ca_cert_identifier = var.ca_cert_identifier #oracle, mssql
+  timezone           = var.timezone           #mssql
 
   # Database (storage) defines
-  allocated_storage = var.allocated_storage
-  storage_type      = var.storage_type
-  iops              = var.iops
-  storage_encrypted = var.storage_encrypted
-  kms_key_id        = var.storage_encrypted ? join("", module.rds_kms.*.key_arn) : var.kms_key_id
+  allocated_storage     = var.allocated_storage
+  storage_type          = var.storage_type
+  iops                  = var.iops
+  max_allocated_storage = var.max_allocated_storage
+  storage_encrypted     = var.storage_encrypted
+  kms_key_id            = var.storage_encrypted ? join("", module.rds_kms.*.key_arn) : var.kms_key_id
 
   # Database (Schema) defines
   username                            = var.username
@@ -38,13 +42,15 @@ resource "aws_db_instance" "this" {
   db_subnet_group_name = local.db_subnet_group_name
   parameter_group_name = local.parameter_group_name_id
 
-  # need to add option group support
-  # option_group_name = local.db_option_group_name
+  # option group
+  option_group_name = local.db_option_group_name
 
-  monitoring_interval = var.monitoring_interval
-
-  # need to add monitoring arn
-  # monitoring_role_arn = "${coalesce(var.monitoring_role_arn, join("", aws_iam_role.enhanced_monitoring.*.arn))}"
+  # monitoring
+  monitoring_interval                   = var.monitoring_interval
+  monitoring_role_arn                   = local.monitoring_role_arn
+  performance_insights_enabled          = var.performance_insights_enabled
+  performance_insights_kms_key_id       = var.performance_insights_enabled && var.performance_insights_use_cmk ? join("", module.rds_kms.*.key_arn) : var.performance_insights_kms_key_id
+  performance_insights_retention_period = var.performance_insights_enabled ? var.performance_insights_retention_period : null
 
   # Database (backup) defines
   backup_retention_period = var.backup_retention_period
