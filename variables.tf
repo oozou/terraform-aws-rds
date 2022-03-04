@@ -62,13 +62,13 @@ variable "ca_cert_identifier" {
 }
 
 variable "timezone" {
-  description = "(Optional) Time zone of the DB instance. timezone is currently only supported by Microsoft SQL Server. The timezone can only be set on creation. See MSSQL User Guide for more information."
+  description = "Time zone of the DB instance. timezone is currently only supported by Microsoft SQL Server. The timezone can only be set on creation. See MSSQL User Guide for more information."
   type        = string
   default     = ""
 }
 
 variable "timeouts" {
-  description = "(Optional) Updated Terraform resource management timeouts. Applies to `aws_db_instance` in particular to permit resource management times"
+  description = "Updated Terraform resource management timeouts. Applies to `aws_db_instance` in particular to permit resource management times"
   type        = map(string)
   default = {
     create = "120m"
@@ -99,7 +99,7 @@ variable "iops" {
 }
 
 variable "max_allocated_storage" {
-  description = "(Optional) When configured, the upper limit to which Amazon RDS can automatically scale the storage of the DB instance. Must be greater than or equal to allocated_storage or leave as default to disable Storage Autoscaling"
+  description = "When configured, the upper limit to which Amazon RDS can automatically scale the storage of the DB instance. Must be greater than or equal to allocated_storage or leave as default to disable Storage Autoscaling"
   type        = number
   default     = 0
 }
@@ -156,7 +156,7 @@ variable "snapshot_identifier" {
 /* -------------------------------------------------------------------------- */
 
 variable "availability_zone" {
-  description = "(Optional) The AZ for the RDS instance."
+  description = "The AZ for the RDS instance."
   type        = string
   default     = ""
 }
@@ -196,13 +196,13 @@ variable "monitoring_role_arn" {
 }
 
 variable "performance_insights_enabled" {
-  description = "(Optional) whether Performance Insights are enabled."
+  description = "whether Performance Insights are enabled."
   type        = bool
   default     = false
 }
 
 variable "performance_insights_use_cmk" {
-  description = "(Optional) whether Performance Insights encryption using customer managed key(KMS)."
+  description = "whether Performance Insights encryption using customer managed key(KMS)."
   type        = bool
   default     = false
 }
@@ -225,7 +225,7 @@ variable "performance_insights_retention_period" {
 variable "backup_retention_period" {
   description = "The days to retain backups for. Mostly, for non-production is 7 days and production is 30 days. Default to 7 days"
   type        = number
-  default     = 7
+  default     = 30
 }
 
 variable "backup_window" {
@@ -304,7 +304,10 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "security_group_ingress_rules" {
+/* -------------------------------------------------------------------------- */
+/*                        CLIENT SECURITY GROUP                               */
+/* -------------------------------------------------------------------------- */
+variable "additional_client_security_group_ingress_rules" {
   type = list(object({
     from_port                = number
     to_port                  = number
@@ -313,11 +316,11 @@ variable "security_group_ingress_rules" {
     source_security_group_id = string
     description              = string
   }))
-  description = "List of objects describing the authorization rules for the client vpn"
+  description = "Additional ingress rule for client security group."
   default     = []
 }
 
-variable "security_group_egress_rules" {
+variable "additional_client_security_group_egress_rules" {
   type = list(object({
     from_port                = number
     to_port                  = number
@@ -326,7 +329,7 @@ variable "security_group_egress_rules" {
     source_security_group_id = string
     description              = string
   }))
-  description = "List of objects describing the authorization rules for the client vpn"
+  description = "Additional egress rule for client security group."
   default     = []
 }
 
@@ -340,7 +343,7 @@ variable "is_create_parameter_group" {
 }
 
 variable "db_parameter_group_name_id" {
-  description = "(optional) if is_create_parameter_group is false, input existed parameter group name id. If unspecified, the default parameter group will be used."
+  description = "if is_create_parameter_group is false, input existed parameter group name id. If unspecified, the default parameter group will be used."
   type        = string
   default     = null
 }
@@ -351,7 +354,7 @@ variable "family" {
 }
 
 variable "parameters" {
-  description = "(Optional) A list of DB parameter maps to apply"
+  description = "A list of DB parameter maps to apply"
   type = list(object({
     apply_method = string
     name         = string
@@ -370,7 +373,7 @@ variable "is_create_db_subnet_group" {
 }
 
 variable "db_subnet_group_name" {
-  description = "(optional) if is_create_db_subnet_group is false, input existed subnet group name. If unspecified, the default vpc subnet group will be used."
+  description = "if is_create_db_subnet_group is false, input existed subnet group name. If unspecified, the default vpc subnet group will be used."
   type        = string
   default     = ""
 }
@@ -391,13 +394,13 @@ variable "is_create_option_group" {
 }
 
 variable "db_option_group_name" {
-  description = "(optional) if is_create_option_group is false, input existed option group name. If unspecified, the default option group will be used."
+  description = "if is_create_option_group is false, input existed option group name. If unspecified, the default option group will be used."
   type        = string
   default     = ""
 }
 
 variable "db_option_engine_name" {
-  description = "Specifies the name of the engine that this option group should be associated with."
+  description = "Specifies the name of the engine that this option group should be associated with. If is_create_option_group is set to true this parameter is required. Ref:https://docs.aws.amazon.com/cli/latest/reference/rds/create-option-group.html"
   type        = string
   default     = ""
 }
