@@ -49,6 +49,19 @@ resource "aws_security_group_rule" "to_internet" {
   cidr_blocks = ["0.0.0.0/0"]
 }
 
+resource "aws_security_group_rule" "additional_cluster_ingress" {
+  count = var.is_create_db_instance && var.is_create_security_group ? length(var.additional_cluster_security_group_ingress_rules) : null
+
+  type                     = "ingress"
+  from_port                = var.additional_cluster_security_group_ingress_rules[count.index].from_port
+  to_port                  = var.additional_cluster_security_group_ingress_rules[count.index].to_port
+  protocol                 = var.additional_cluster_security_group_ingress_rules[count.index].protocol
+  cidr_blocks              = length(var.additional_cluster_security_group_ingress_rules[count.index].source_security_group_id) > 0 ? null : var.additional_cluster_security_group_ingress_rules[count.index].cidr_blocks
+  source_security_group_id = length(var.additional_cluster_security_group_ingress_rules[count.index].cidr_blocks) > 0 ? null : var.additional_cluster_security_group_ingress_rules[count.index].source_security_group_id
+  security_group_id        = local.rds_security_group_id
+  description              = var.additional_cluster_security_group_ingress_rules[count.index].description
+}
+
 /* -------------------------------------------------------------------------- */
 /*                          SECURITY_GROUP_RULE_CLIENT                        */
 /* -------------------------------------------------------------------------- */
