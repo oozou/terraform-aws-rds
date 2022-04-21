@@ -8,4 +8,6 @@ module "rds_kms" {
   key_type    = "service"
   description = "Used to encrypt data in ${local.identifier}"
   alias_name  = "${local.identifier}-kms"
+
+  custom_tags = merge(local.tags, { "Name" : "${local.identifier}-kms" })
 }
