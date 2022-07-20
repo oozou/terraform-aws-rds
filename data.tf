@@ -1,3 +1,3 @@
-data "aws_caller_identity" "main" {}
+data "aws_caller_identity" "this" {}
 
-data "aws_region" "active" {}
+data "aws_region" "this" {}

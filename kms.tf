@@ -4,7 +4,7 @@
 module "rds_kms" {
   count = var.is_create_db_instance && var.storage_encrypted ? 1 : 0
 
-  source = "git@github.com:oozou/terraform-aws-kms-key.git?ref=v0.0.2"
+  source = "git@github.com:oozou/terraform-aws-kms-key.git?ref=v1.0.0"
 
   prefix               = var.prefix
   name                 = "${local.identifier}-kms"
@@ -14,8 +14,8 @@ module "rds_kms" {
   append_random_suffix = true
 
   service_key_info = {
-    caller_account_ids = [data.aws_caller_identity.main.account_id]
-    aws_service_names  = ["rds.${data.aws_region.active.name}.amazonaws.com"]
+    caller_account_ids = [data.aws_caller_identity.this.account_id]
+    aws_service_names  = ["rds.${data.aws_region.this.name}.amazonaws.com"]
   }
 
   additional_policies = var.additional_kms_key_policies
