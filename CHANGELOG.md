@@ -2,6 +2,13 @@
 
 All notable changes to this module will be documented in this file.
 
+## [1.0.4] - 2022-07-20
+
+### Changed
+
+- Add `var.additional_kms_key_policies` for RDS KMS
+- Upgrade KMS module version to 1.0.0
+- Change data `aws_caller_identity.main` and `aws_region.active` to `XXX.this`
 
 ## [1.0.3] - 2022-07-18
 
@@ -10,10 +17,7 @@ All notable changes to this module will be documented in this file.
 - variables.tf
   - storage_encrypted default value change from false to true
 
-
-
 ## [1.0.2] - 2022-04-22
-  
 
 ### Added
 

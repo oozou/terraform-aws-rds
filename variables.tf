@@ -213,6 +213,12 @@ variable "performance_insights_kms_key_id" {
   default     = null
 }
 
+variable "additional_kms_key_policies" {
+  description = "Additional IAM policies block, input as data source. Ref: https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document"
+  type        = list(string)
+  default     = []
+}
+
 variable "performance_insights_retention_period" {
   type        = number
   default     = null
