@@ -2,6 +2,12 @@
 
 All notable changes to this module will be documented in this file.
 
+## [1.0.5] - 2022-09-21
+
+### Changed
+
+- KMS module use from public repository
+
 ## [1.0.4] - 2022-07-22
 
 ### Changed
