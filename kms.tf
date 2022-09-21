@@ -4,7 +4,8 @@
 module "rds_kms" {
   count = var.is_create_db_instance && var.storage_encrypted ? 1 : 0
 
-  source = "git@github.com:oozou/terraform-aws-kms-key.git?ref=v1.0.0"
+  source  = "oozou/kms-key/aws"
+  version = "1.0.0"
 
   prefix               = var.prefix
   name                 = "${local.identifier}-kms"
