@@ -80,4 +80,7 @@ resource "aws_db_instance" "this" {
 
   # unused parameters
   # replicate_source_db = "${var.replicate_source_db}"
+  depends_on = [
+    aws_cloudwatch_log_group.this
+  ]
 }

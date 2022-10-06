@@ -1,5 +1,31 @@
 provider "aws" {
-  region = "us-east-2"
+  region = "ap-southeast-1"
+}
+
+################################################################################
+# vpc
+################################################################################
+module "vpc" {
+  source = "git@github.com:oozou/terraform-aws-vpc.git?ref=v1.1.2"
+
+  is_create_vpc = true
+
+  prefix       = "oozou"
+  environment  = "test"
+  account_mode = "spoke"
+
+  cidr              = "10.105.0.0/16"
+  public_subnets    = ["10.105.0.0/24", "10.105.1.0/24", "10.105.2.0/24"]
+  private_subnets   = ["10.105.60.0/22", "10.105.64.0/22", "10.105.68.0/22"]
+  database_subnets  = ["10.105.20.0/23", "10.105.22.0/23", "10.105.24.0/23"]
+  availability_zone = ["ap-southeast-1a", "ap-southeast-1b", "ap-southeast-1c"]
+
+  is_create_nat_gateway             = true
+  is_enable_single_nat_gateway      = true
+  is_create_flow_log                = false
+  is_enable_flow_log_s3_integration = false
+
+  tags = { workspace = "000-oozou-aurora test" }
 }
 
 
@@ -40,14 +66,14 @@ module "rds_mssql" {
   backup_retention_period = 7
 
   #db instance (additional)
-  skip_final_snapshot = false
+  skip_final_snapshot = true
   deletion_protection = false
 
   #db instance (logging)
   enabled_cloudwatch_logs_exports = ["agent", "error"]
 
   #security group
-  vpc_id = "vpc-xxxxx"
+  vpc_id = module.vpc.vpc_id
   additional_client_security_group_ingress_rules = [{
     cidr_blocks              = ["0.0.0.0/0"]
     description              = "allow from any"
@@ -84,7 +110,7 @@ module "rds_mssql" {
   family = "sqlserver-web-15.0"
 
   #subnet group
-  subnet_ids = ["subnet-xxxxx", "subnet-xxxxx"]
+  subnet_ids = module.vpc.database_subnet_ids
 
   #option group
   is_create_option_group         = true

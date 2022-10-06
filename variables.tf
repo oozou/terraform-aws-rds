@@ -448,3 +448,19 @@ variable "db_options" {
   default     = []
   description = "A list of DB options to apply with an option group. Depends on DB engine"
 }
+
+/* -------------------------------------------------------------------------- */
+/*                               CLOUD WATCH                                  */
+/* -------------------------------------------------------------------------- */
+
+variable "cloudwatch_log_retention_in_days" {
+  description = "Specifies the number of days you want to retain log events Possible values are: 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653, and 0. If you select 0, the events in the log group are always retained and never expire"
+  type        = number
+  default     = 90
+}
+
+variable "cloudwatch_log_kms_key_id" {
+  description = "The ARN for the KMS encryption key."
+  type        = string
+  default     = null
+}
