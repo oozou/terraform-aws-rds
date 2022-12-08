@@ -8,8 +8,8 @@ module "rds_kms" {
   version = "1.0.0"
 
   prefix               = var.prefix
-  name                 = "${local.identifier}-kms"
   environment          = var.environment
+  name                 = var.name
   key_type             = "service"
   description          = "Used to encrypt data in ${local.identifier}"
   append_random_suffix = true
@@ -21,5 +21,5 @@ module "rds_kms" {
 
   additional_policies = var.additional_kms_key_policies
 
-  tags = merge(local.tags, { "Name" : "${local.identifier}-kms" })
+  tags = local.tags
 }
