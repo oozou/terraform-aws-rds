@@ -9,7 +9,7 @@ module "rds_kms" {
 
   prefix               = var.prefix
   environment          = var.environment
-  name                 = var.name
+  name                 = "${var.name}-db"
   key_type             = "service"
   description          = "Used to encrypt data in ${local.identifier}"
   append_random_suffix = true
