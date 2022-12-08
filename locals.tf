@@ -6,13 +6,12 @@ locals {
 
   now = timestamp()
 
+  identifier          = format("%s-%s-%s-db", var.prefix, var.environment, var.name)
   th_timezone         = timeadd(local.now, "7h")
   timestamp           = formatdate("YYYY-MM-DD-hh-mm", local.th_timezone)
   final_snapshot_name = var.skip_final_snapshot ? null : format("%s-%s", local.identifier, local.timestamp)
 
   rds_security_group_id = join("", aws_security_group.cluster.*.id)
-
-  identifier = format("%s-%s-%s-db", var.prefix, var.environment, var.name)
 
   tags = merge(
     {

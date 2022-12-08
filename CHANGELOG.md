@@ -2,6 +2,14 @@
 
 All notable changes to this module will be documented in this file.
 
+## [1.0.7] - 2022-12-08
+
+### Changed
+
+- Update module `rds_kms` argument:
+    - `name` from `${local.identifier}-kms` to `${var.name}-db`
+    - `tags` remove `{ "Name" : "${local.identifier}-kms" }`
+
 ## [1.0.6] - 2022-10-07
 
 ### Changed
