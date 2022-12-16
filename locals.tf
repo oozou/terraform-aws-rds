@@ -20,4 +20,16 @@ locals {
     },
     var.custom_tags
   )
+
+  /* -------------------------------------------------------------------------- */
+  /*                                    Alarms                                  */
+  /* -------------------------------------------------------------------------- */
+    comparison_operators = {
+      ">=" = "GreaterThanOrEqualToThreshold",
+      ">"  = "GreaterThanThreshold",
+      "<"  = "LessThanThreshold",
+      "<=" = "LessThanOrEqualToThreshold",
+    }
+
+
 }

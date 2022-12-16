@@ -464,3 +464,58 @@ variable "cloudwatch_log_kms_key_id" {
   type        = string
   default     = null
 }
+
+/* -------------------------------------------------------------------------- */
+/*                                  alarms                                    */
+/* -------------------------------------------------------------------------- */
+
+variable "is_enable_default_alarms" {
+  description = "if enable the default alarms"
+  type        = bool
+  default     = false
+}
+
+variable "default_alarm_actions" {
+  description = "The list of actions to execute when this alarm transitions into an ALARM state from any other state. Each action is specified as an Amazon Resource Name (ARN)."
+  type        = list(string)
+  default     = []
+}
+
+variable "default_ok_actions" {
+  description = "The list of actions to execute when this alarm transitions into an OK state from any other state. Each action is specified as an Amazon Resource Name (ARN)."
+  type        = list(string)
+  default     = []
+}
+
+
+variable "custom_rds_alarms_configure" {
+  description = <<EOF
+    custom_rds_alarms_configure = {
+      cpu_utilization_too_high = {
+        metric_name         = "CPUUtilization"
+        statistic           = "Average"
+        comparison_operator = ">="
+        threshold           = "85"
+        period              = "300"
+        evaluation_periods  = "1"
+        alarm_actions       = [sns_topic_arn]
+        ok_actions       = [sns_topic_arn]
+      }
+    }
+  EOF
+  type        = any
+  default     = {}
+}
+
+variable "event_categories" {
+  description = "A list of event categories for a SourceType that you want to subscribe to See http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Events.html"
+  type        = list(string)
+  default     = [
+    "failover",
+    "failure",
+    "low storage",
+    "maintenance",
+    "notification",
+    "recovery",
+  ]
+}
