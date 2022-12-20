@@ -66,7 +66,7 @@ resource "aws_cloudwatch_metric_alarm" "freeable_memory_too_low" {
   namespace           = "AWS/RDS"
   period              = "600"
   statistic           = "Average"
-  threshold           = "20"
+  threshold           = 128000000
   alarm_description   = "Average database freeable memory over last 10 minutes too low, performance may suffer"
   alarm_actions       = var.default_alarm_actions
   ok_actions          = var.default_ok_actions
@@ -85,7 +85,7 @@ resource "aws_cloudwatch_metric_alarm" "free_storage_space_too_low" {
   namespace           = "AWS/RDS"
   period              = "600"
   statistic           = "Average"
-  threshold           = "20"
+  threshold           = var.max_allocated_storage*0.1
   alarm_description   = "Average database free storage space over last 10 minutes too low"
   alarm_actions       = var.default_alarm_actions
   ok_actions          = var.default_ok_actions
