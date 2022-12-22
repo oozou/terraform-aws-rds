@@ -2,6 +2,18 @@
 
 All notable changes to this module will be documented in this file.
 
+## [1.0.8] - 2022-12-22
+
+### Changed
+
+- Add alarm.tf with default and custom RDS alarms
+- Add following vars
+    - is_enable_default_alarms
+    - default_alarm_actions
+    - default_ok_actions
+    - custom_rds_alarms_configure
+    - event_categories
+
 ## [1.0.7] - 2022-12-08
 
 ### Changed

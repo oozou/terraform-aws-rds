@@ -511,11 +511,11 @@ variable "event_categories" {
   description = "A list of event categories for a SourceType that you want to subscribe to See http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Events.html"
   type        = list(string)
   default     = [
-    "failover",
+    #"failover",
     "failure",
-    "low storage",
-    "maintenance",
-    "notification",
-    "recovery",
+    #"low storage",
+    #"maintenance",
+    #"notification",
+    #"recovery",
   ]
 }
