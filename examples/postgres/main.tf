@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-2"
+  region = "ap-southeast-1"
 }
 
 module "rds_postgres" {
@@ -44,7 +44,7 @@ module "rds_postgres" {
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
 
   #security group
-  vpc_id = "vpc-xxxxxx"
+  vpc_id = "vpc-xxxx"
   additional_client_security_group_ingress_rules = [{
     cidr_blocks              = ["0.0.0.0/0"]
     description              = "allow from any"
@@ -86,8 +86,22 @@ module "rds_postgres" {
   }]
 
   #subnet group
-  subnet_ids = ["subnet-xxx", "subnet-xxxx"]
+  subnet_ids = ["subnet-xxxxx", "subnet-xxxxx"]
 
+  is_enable_default_alarms = true
+
+  custom_rds_alarms_configure = {
+    cpu_utilization_too_high = {
+      metric_name         = "CPUUtilization"
+      statistic           = "Average"
+      comparison_operator = ">="
+      threshold           = "5"
+      period              = "300"
+      evaluation_periods  = "1"
+      alarm_actions       = ["arn:aws:sns:ap-southeast-1:xxxxx:alarm-test"]
+    }
+  }
+  default_alarm_actions = ["arn:aws:sns:ap-southeast-1:xxxxx:alarm-test"]
   custom_tags = {
     "Workspace" : "000-dev"
   }
