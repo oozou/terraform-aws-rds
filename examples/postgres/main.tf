@@ -44,7 +44,7 @@ module "rds_postgres" {
   enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
 
   #security group
-  vpc_id = "vpc-0d4a8318e598f784b"
+  vpc_id = "vpc-xxxx"
   additional_client_security_group_ingress_rules = [{
     cidr_blocks              = ["0.0.0.0/0"]
     description              = "allow from any"
@@ -86,7 +86,7 @@ module "rds_postgres" {
   }]
 
   #subnet group
-  subnet_ids = ["subnet-05899160466780f4f", "subnet-0063d593da3e26b5d"]
+  subnet_ids = ["subnet-xxxxx", "subnet-xxxxx"]
 
   is_enable_default_alarms = true
 
