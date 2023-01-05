@@ -299,6 +299,14 @@ variable "enabled_cloudwatch_logs_exports" {
 /* -------------------------------------------------------------------------- */
 /*                               SECURITY GROUP                               */
 /* -------------------------------------------------------------------------- */
+
+
+variable "is_enable_internet_access" {
+  description = "Determines whether to enable the outbound internet access"
+  type        = bool
+  default     = false
+}
+
 variable "is_create_security_group" {
   description = "Determines whether to create security group for RDS cluster"
   type        = bool
