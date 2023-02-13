@@ -441,11 +441,11 @@ variable "db_option_major_engine_version" {
 
 variable "db_options" {
   type = list(object({
-    db_security_group_memberships  = list(string)
+    db_security_group_memberships  = optional(list(string))
     option_name                    = string
-    port                           = number
-    version                        = string
-    vpc_security_group_memberships = list(string)
+    port                           = optional(number)
+    version                        = optional(string)
+    vpc_security_group_memberships = optional(list(string))
 
     option_settings = list(object({
       name  = string
