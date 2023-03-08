@@ -19,6 +19,7 @@ resource "aws_db_instance" "this" {
   allocated_storage     = var.allocated_storage
   storage_type          = var.storage_type
   iops                  = var.iops
+  storage_throughput    = var.storage_throughput
   max_allocated_storage = var.max_allocated_storage
   storage_encrypted     = var.storage_encrypted
   kms_key_id            = var.storage_encrypted ? join("", module.rds_kms.*.key_arn) : var.kms_key_id

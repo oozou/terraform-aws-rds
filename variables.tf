@@ -93,9 +93,15 @@ variable "storage_type" {
 }
 
 variable "iops" {
-  description = "The amount of provisioned IOPS. Setting this implies a storage_type of 'io1'"
+  description = "The amount of provisioned IOPS. Setting this implies a storage_type of 'io1' or 'gp3'"
   type        = number
   default     = 0
+}
+
+variable "storage_throughput" {
+  description = "he storage throughput value for the DB instance. Can only be set when storage_type is 'gp3'"
+  type        = number
+  default     = 125
 }
 
 variable "max_allocated_storage" {
