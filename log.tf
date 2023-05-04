@@ -18,7 +18,7 @@ data "aws_iam_policy_document" "cloudwatch_log_group_kms_policy" {
     condition {
       test     = "ArnEquals"
       variable = "kms:EncryptionContext:aws:logs:arn"
-      values   = formatlist("arn:aws:logs:${data.aws_region.this.name}:${data.aws_caller_identity.this.account_id}:log-group:/aws/rds/instance/${local.identifier}/%s:*", var.enabled_cloudwatch_logs_exports)
+      values   = formatlist("arn:aws:logs:${data.aws_region.this.name}:${data.aws_caller_identity.this.account_id}:log-group:/aws/rds/instance/${local.identifier}/%s", var.enabled_cloudwatch_logs_exports)
     }
   }
 }
