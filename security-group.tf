@@ -39,7 +39,7 @@ resource "aws_security_group_rule" "from_client" {
 }
 
 resource "aws_security_group_rule" "to_internet" {
-  count = var.is_enable_internet_access ? 1 : 0
+  count             = var.is_enable_internet_access ? 1 : 0
   type              = "egress"
   from_port         = -1
   to_port           = -1

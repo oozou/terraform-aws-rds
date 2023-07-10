@@ -3,6 +3,22 @@
 All notable changes to this module will be documented in this file.
 
 
+## [1.0.10] - 2023-XX-XX
+
+### Added
+
+- Add log group encryption with related resources
+  - Data `os_access_cloudwatch_policy.cloudwatch_log_group_kms_policy`
+  - Module `cloudwatch_log_group_kms`
+- Add data source `aws_region.this` and `aws_caller_identity.this`
+- Add `local.cloudwatch_log_group_kms_key_arn` to control logic selecting KMS key arn
+
+### Changed
+
+- Update submodule `vpn_connection` parameter
+  - Add `var.is_create_default_kms`
+  - Rename `var.cloudwatch_log_kms_key_id` to `var.cloudwatch_log_group_kms_key_arn`
+
 ## [1.0.9] - 2023-01-05
 
 ### Added

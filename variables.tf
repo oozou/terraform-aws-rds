@@ -93,9 +93,15 @@ variable "storage_type" {
 }
 
 variable "iops" {
-  description = "The amount of provisioned IOPS. Setting this implies a storage_type of 'io1'"
+  description = "The amount of provisioned IOPS. Setting this implies a storage_type of 'io1' or 'gp3'"
   type        = number
-  default     = 0
+  default     = null
+}
+
+variable "storage_throughput" {
+  description = "he storage throughput value for the DB instance. Can only be set when storage_type is 'gp3'"
+  type        = number
+  default     = null
 }
 
 variable "max_allocated_storage" {
@@ -441,11 +447,11 @@ variable "db_option_major_engine_version" {
 
 variable "db_options" {
   type = list(object({
-    db_security_group_memberships  = list(string)
+    db_security_group_memberships  = optional(list(string))
     option_name                    = string
-    port                           = number
-    version                        = string
-    vpc_security_group_memberships = list(string)
+    port                           = optional(number)
+    version                        = optional(string)
+    vpc_security_group_memberships = optional(list(string))
 
     option_settings = list(object({
       name  = string
@@ -460,14 +466,19 @@ variable "db_options" {
 /* -------------------------------------------------------------------------- */
 /*                               CLOUD WATCH                                  */
 /* -------------------------------------------------------------------------- */
-
 variable "cloudwatch_log_retention_in_days" {
   description = "Specifies the number of days you want to retain log events Possible values are: 1, 3, 5, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, 3653, and 0. If you select 0, the events in the log group are always retained and never expire"
   type        = number
   default     = 90
 }
 
-variable "cloudwatch_log_kms_key_id" {
+variable "is_create_default_kms" {
+  description = "Whether to create cloudwatch log group kms or not"
+  type        = bool
+  default     = true
+}
+
+variable "cloudwatch_log_kms_key_arn" {
   description = "The ARN for the KMS encryption key."
   type        = string
   default     = null
@@ -518,7 +529,7 @@ variable "custom_rds_alarms_configure" {
 variable "event_categories" {
   description = "A list of event categories for a SourceType that you want to subscribe to See http://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Events.html"
   type        = list(string)
-  default     = [
+  default = [
     #"failover",
     "failure",
     #"low storage",
