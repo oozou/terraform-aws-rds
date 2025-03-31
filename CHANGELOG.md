@@ -2,6 +2,11 @@
 
 All notable changes to this module will be documented in this file.
 
+## [2.0.0] - 2025-03-31
+### Changed
+
+- update output aws_db_instance.name to aws_db_instance.db_name
+- upgrade aws provider to >= 5.0.0
 
 ## [1.0.10] - 2023-07-10
 
