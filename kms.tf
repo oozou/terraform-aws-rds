@@ -25,7 +25,7 @@ module "rds_kms" {
 }
 
 module "postgres_creds_kms_key" {
-  count = var.is_create_db_instance && var.storage_encrypted ? 1 : 0
+  count = var.is_create_db_instance && var.storage_encrypted && var.is_create_secret? 1 : 0
 
   source  = "oozou/kms-key/aws"
   version = "1.0.0"

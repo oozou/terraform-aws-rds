@@ -104,6 +104,7 @@ resource "random_string" "postgres_creds_random_suffix" {
 }
 
 resource "aws_secretsmanager_secret" "postgres_creds" {
+  count = var.is_create_db_instance && var.is_create_secret? 1 : 0
   name        = "${lower(local.identifier)}/postgres-master-creds--${random_string.postgres_creds_random_suffix.result}"
   description = "Postgres RDS Master Credentials"
   kms_key_id  = module.postgres_creds_kms_key[0].key_id
@@ -115,6 +116,7 @@ resource "aws_secretsmanager_secret" "postgres_creds" {
 }
 
 resource "aws_secretsmanager_secret_version" "postgres_creds" {
-  secret_id     = aws_secretsmanager_secret.postgres_creds.id
+  count = var.is_create_db_instance && var.is_create_secret? 1 : 0
+  secret_id     = aws_secretsmanager_secret.postgres_creds[0].id
   secret_string = jsonencode(local.postgres_db_creds)
 }

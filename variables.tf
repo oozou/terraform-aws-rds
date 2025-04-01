@@ -538,3 +538,9 @@ variable "event_categories" {
     #"recovery",
   ]
 }
+
+variable "is_create_secret" {
+  description = "if create secret manager"
+  type        = bool
+  default     = true
+}
