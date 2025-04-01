@@ -23,3 +23,27 @@ module "rds_kms" {
 
   tags = local.tags
 }
+
+module "postgres_creds_kms_key" {
+  count = var.is_create_db_instance && var.storage_encrypted ? 1 : 0
+
+  source  = "oozou/kms-key/aws"
+  version = "1.0.0"
+
+  prefix               = var.prefix
+  environment          = var.environment
+  name                 = "${var.name}-secret-postgres"
+  key_type             = "service"
+  description          = "Used to encrypt data in ${local.identifier}-secret-postgres"
+  append_random_suffix = true
+
+  service_key_info = {
+    "aws_service_names" = [
+      format(
+        "secretsmanager.%s.amazonaws.com",
+        data.aws_region.this.name,
+      ),
+    ]
+    "caller_account_ids" = [data.aws_caller_identity.this.account_id]
+  }
+}

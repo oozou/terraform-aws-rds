@@ -114,3 +114,7 @@ output "db_client_security_group_id" {
   description = "Security group id for the rds client."
   value       = try(aws_security_group.client.id, "")
 }
+
+output "secret_manager_postgres_creds_key" {
+  value = aws_secretsmanager_secret.postgres_creds.name
+}

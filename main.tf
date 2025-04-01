@@ -85,3 +85,36 @@ resource "aws_db_instance" "this" {
     aws_cloudwatch_log_group.this
   ]
 }
+
+
+
+# ################## Credentials ######################
+# Store Postgres Master Credentials in the secret manager
+# at this time, Terraform doesn't support RDS credential type, but we are storing rds connection details in the same format as AWS does for RDS type
+# https://docs.aws.amazon.com/secretsmanager/latest/userguide/terms-concepts.html
+# https://github.com/terraform-providers/terraform-provider-aws/issues/4953
+
+
+# Append random string to SM Secret names because once we tear down the infra, the secret does not actually
+# get deleted right away, which means that if we then try to recreate the infra, it'll fail as the
+# secret name already exists.
+resource "random_string" "postgres_creds_random_suffix" {
+  length  = 6
+  special = false
+}
+
+resource "aws_secretsmanager_secret" "postgres_creds" {
+  name        = "${lower(local.identifier)}/postgres-master-creds--${random_string.postgres_creds_random_suffix.result}"
+  description = "Postgres RDS Master Credentials"
+  kms_key_id  = module.postgres_creds_kms_key[0].key_id
+
+  tags = merge({
+    Name = "${local.identifier}/postgres-master-creds"
+
+  }, var.custom_tags)
+}
+
+resource "aws_secretsmanager_secret_version" "postgres_creds" {
+  secret_id     = aws_secretsmanager_secret.postgres_creds.id
+  secret_string = jsonencode(local.postgres_db_creds)
+}

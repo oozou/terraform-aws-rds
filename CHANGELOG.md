@@ -2,6 +2,12 @@
 
 All notable changes to this module will be documented in this file.
 
+## [2.1.0] - 2025-04-01
+### Added
+
+- add secret manager resource for storing the db master username/password
+- add kms resource to encrypt the secret manager
+
 ## [2.0.0] - 2025-03-31
 ### Changed
 
