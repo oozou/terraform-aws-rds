@@ -2,6 +2,11 @@
 
 All notable changes to this module will be documented in this file.
 
+## [2.1.2] - 2025-04-08
+### Updated
+
+- update db identifier in DB alarms and event
+
 ## [2.1.1] - 2025-04-08
 ### Updated
 
