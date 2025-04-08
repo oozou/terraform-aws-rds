@@ -101,7 +101,7 @@ resource "aws_db_event_subscription" "default" {
   sns_topic = each.value
 
   source_type = "db-instance"
-  source_ids  = [aws_db_instance.this[0].id]
+  source_ids  = [aws_db_instance.this[0].identifier]
 
   event_categories = var.event_categories
 
