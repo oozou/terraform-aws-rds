@@ -28,7 +28,7 @@ module "custom_rds_alarms" {
   threshold           = lookup(each.value, "threshold", null)
 
   dimensions = {
-    DBInstanceIdentifier = aws_db_instance.this[0].id
+    DBInstanceIdentifier = local.identifier
   }
 
   alarm_actions = lookup(each.value, "alarm_actions", null)
@@ -53,7 +53,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_too_high" {
   ok_actions          = var.default_ok_actions
 
   dimensions = {
-    DBInstanceIdentifier = aws_db_instance.this[0].id
+    DBInstanceIdentifier = local.identifier
   }
 }
 
@@ -72,7 +72,7 @@ resource "aws_cloudwatch_metric_alarm" "freeable_memory_too_low" {
   ok_actions          = var.default_ok_actions
 
   dimensions = {
-    DBInstanceIdentifier = aws_db_instance.this[0].id
+    DBInstanceIdentifier = local.identifier
   }
 }
 
@@ -91,7 +91,7 @@ resource "aws_cloudwatch_metric_alarm" "free_storage_space_too_low" {
   ok_actions          = var.default_ok_actions
 
   dimensions = {
-    DBInstanceIdentifier = aws_db_instance.this[0].id
+    DBInstanceIdentifier = local.identifier
   }
 }
 
