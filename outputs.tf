@@ -118,3 +118,7 @@ output "db_client_security_group_id" {
 output "secret_manager_postgres_creds_key" {
   value = aws_secretsmanager_secret.postgres_creds[0].name
 }
+
+output "secret_manager_postgres_creds_arn" {
+  value = aws_secretsmanager_secret.postgres_creds[0].arn
+}
