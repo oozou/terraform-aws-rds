@@ -2,6 +2,11 @@
 
 All notable changes to this module will be documented in this file.
 
+## [2.1.3] - 2025-04-24
+### Added
+
+- Add db secret arn output
+
 ## [2.1.2] - 2025-04-08
 ### Updated
 
