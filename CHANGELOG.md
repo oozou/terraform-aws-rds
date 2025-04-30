@@ -2,6 +2,11 @@
 
 All notable changes to this module will be documented in this file.
 
+## [2.1.4] - 2025-04-30
+### Fixed
+
+- Fixed db secret name and arn output
+
 ## [2.1.3] - 2025-04-24
 ### Added
 
