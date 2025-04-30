@@ -99,13 +99,14 @@ resource "aws_db_instance" "this" {
 # get deleted right away, which means that if we then try to recreate the infra, it'll fail as the
 # secret name already exists.
 resource "random_string" "postgres_creds_random_suffix" {
+  count = var.is_create_db_instance && var.is_create_secret? 1 : 0
   length  = 6
   special = false
 }
 
 resource "aws_secretsmanager_secret" "postgres_creds" {
   count = var.is_create_db_instance && var.is_create_secret? 1 : 0
-  name        = "${lower(local.identifier)}/postgres-master-creds--${random_string.postgres_creds_random_suffix.result}"
+  name        = "${lower(local.identifier)}/postgres-master-creds--${random_string.postgres_creds_random_suffix[0].result}"
   description = "Postgres RDS Master Credentials"
   kms_key_id  = module.postgres_creds_kms_key[0].key_id
 
