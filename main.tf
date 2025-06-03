@@ -33,7 +33,7 @@ resource "aws_db_instance" "this" {
   master_user_secret_kms_key_id       = module.rds_creds_kms_key[0].key_id
 
   # Database (create from snapshot) defines
-  snapshot_identifier = "${var.snapshot_identifier}-${random_string.rds_snapshot_random_suffix[0].result}"
+  snapshot_identifier = "${local.final_snapshot_name}-${random_string.rds_snapshot_random_suffix[0].result}"
 
   # Database (networking) defines
   vpc_security_group_ids = [try(aws_security_group.cluster[0].id, "")]
