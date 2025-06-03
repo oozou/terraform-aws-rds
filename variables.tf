@@ -548,5 +548,5 @@ variable "is_create_secret" {
 variable "is_manage_master_user_password" {
   description = "if manage master user password by rds"
   type        = bool
-  default     = true
+  default     = false
 }
