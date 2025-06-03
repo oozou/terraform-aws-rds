@@ -26,7 +26,7 @@ resource "aws_db_instance" "this" {
 
   # Database (Schema) defines
   username                            = var.username
-  password                            = var.is_manage_master_user_password ? null : var.password
+  password                            = var.password #var.is_manage_master_user_password ? null : var.password
   port                                = var.port
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
   # manage_master_user_password         = var.is_manage_master_user_password ? var.is_manage_master_user_password : null
