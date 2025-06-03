@@ -26,14 +26,14 @@ resource "aws_db_instance" "this" {
 
   # Database (Schema) defines
   username                            = var.username
-  password                            = var.password #var.is_manage_master_user_password ? null : var.password
+  password                            = var.is_manage_master_user_password ? null : var.password
   port                                = var.port
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
-  #manage_master_user_password         = var.is_manage_master_user_password ? var.is_manage_master_user_password : null
-  #master_user_secret_kms_key_id       = var.is_manage_master_user_password ? module.rds_creds_kms_key[0].key_id : null
+  manage_master_user_password         = var.is_manage_master_user_password ? var.is_manage_master_user_password : null
+  master_user_secret_kms_key_id       = var.is_manage_master_user_password ? module.rds_creds_kms_key[0].key_id : null
 
   # Database (create from snapshot) defines
-  snapshot_identifier = "${local.final_snapshot_name}-${random_string.rds_snapshot_random_suffix[0].result}"
+  snapshot_identifier = var.snapshot_identifier
 
   # Database (networking) defines
   vpc_security_group_ids = [try(aws_security_group.cluster[0].id, "")]

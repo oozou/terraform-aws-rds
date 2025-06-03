@@ -9,7 +9,7 @@ locals {
   identifier          = format("%s-%s-%s-db", var.prefix, var.environment, var.name)
   th_timezone         = timeadd(local.now, "7h")
   timestamp           = formatdate("YYYY-MM-DD-hh-mm", local.th_timezone)
-  final_snapshot_name = var.skip_final_snapshot ? null : var.snapshot_identifier != null ? var.snapshot_identifier : local.identifier
+  final_snapshot_name = var.skip_final_snapshot ? null : "${local.identifier}-${random_string.rds_snapshot_random_suffix[0].result}"
 
   rds_security_group_id = join("", aws_security_group.cluster.*.id)
 
