@@ -26,12 +26,14 @@ resource "aws_db_instance" "this" {
 
   # Database (Schema) defines
   username                            = var.username
-  password                            = var.password
+  password                            = var.is_manage_master_user_password ? null : var.password
   port                                = var.port
   iam_database_authentication_enabled = var.iam_database_authentication_enabled
+  manage_master_user_password         = var.is_manage_master_user_password
+  master_user_secret_kms_key_id       = module.rds_creds_kms_key[0].key_id
 
   # Database (create from snapshot) defines
-  snapshot_identifier = var.snapshot_identifier
+  snapshot_identifier = "${var.snapshot_identifier}-${random_string.rds_snapshot_random_suffix[0].result}"
 
   # Database (networking) defines
   vpc_security_group_ids = [try(aws_security_group.cluster[0].id, "")]
@@ -86,10 +88,14 @@ resource "aws_db_instance" "this" {
   ]
 }
 
-
+resource "random_string" "rds_snapshot_random_suffix" {
+  count   = var.is_create_db_instance ? 1 : 0
+  length  = 6
+  special = false
+}
 
 # ################## Credentials ######################
-# Store Postgres Master Credentials in the secret manager
+# Store rds Master Credentials in the secret manager
 # at this time, Terraform doesn't support RDS credential type, but we are storing rds connection details in the same format as AWS does for RDS type
 # https://docs.aws.amazon.com/secretsmanager/latest/userguide/terms-concepts.html
 # https://github.com/terraform-providers/terraform-provider-aws/issues/4953
@@ -98,26 +104,26 @@ resource "aws_db_instance" "this" {
 # Append random string to SM Secret names because once we tear down the infra, the secret does not actually
 # get deleted right away, which means that if we then try to recreate the infra, it'll fail as the
 # secret name already exists.
-resource "random_string" "postgres_creds_random_suffix" {
-  count = var.is_create_db_instance && var.is_create_secret? 1 : 0
+resource "random_string" "rds_creds_random_suffix" {
+  count   = var.is_create_db_instance && var.is_create_secret ? 1 : 0
   length  = 6
   special = false
 }
 
-resource "aws_secretsmanager_secret" "postgres_creds" {
-  count = var.is_create_db_instance && var.is_create_secret? 1 : 0
-  name        = "${lower(local.identifier)}/postgres-master-creds--${random_string.postgres_creds_random_suffix[0].result}"
-  description = "Postgres RDS Master Credentials"
-  kms_key_id  = module.postgres_creds_kms_key[0].key_id
+resource "aws_secretsmanager_secret" "rds_creds" {
+  count       = var.is_create_db_instance && var.is_create_secret ? 1 : 0
+  name        = "${lower(local.identifier)}/rds-master-creds--${random_string.rds_creds_random_suffix[0].result}"
+  description = "rds RDS Master Credentials"
+  kms_key_id  = module.rds_creds_kms_key[0].key_id
 
   tags = merge({
-    Name = "${local.identifier}/postgres-master-creds"
+    Name = "${local.identifier}/rds-master-creds"
 
   }, var.custom_tags)
 }
 
-resource "aws_secretsmanager_secret_version" "postgres_creds" {
-  count = var.is_create_db_instance && var.is_create_secret? 1 : 0
-  secret_id     = aws_secretsmanager_secret.postgres_creds[0].id
-  secret_string = jsonencode(local.postgres_db_creds)
+resource "aws_secretsmanager_secret_version" "rds_creds" {
+  count         = var.is_create_db_instance && var.is_create_secret ? 1 : 0
+  secret_id     = aws_secretsmanager_secret.rds_creds[0].id
+  secret_string = jsonencode(local.rds_db_creds)
 }

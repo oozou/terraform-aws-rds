@@ -115,10 +115,12 @@ output "db_client_security_group_id" {
   value       = try(aws_security_group.client.id, "")
 }
 
-output "secret_manager_postgres_creds_key" {
-  value = try(aws_secretsmanager_secret.postgres_creds[0].name, "")
+output "secret_manager_rds_creds_key" {
+  value = var.is_manage_master_user_password ? null : try(aws_secretsmanager_secret.rds_creds[0].name, "")
 }
 
-output "secret_manager_postgres_creds_arn" {
-  value = try(aws_secretsmanager_secret.postgres_creds[0].arn, "")
+output "secret_manager_rds_creds_arn" {
+  value = var.is_manage_master_user_password ? aws_db_instance.this[0].master_user_secret[0].secret_arn : try(aws_secretsmanager_secret.rds_creds[0].arn, "")
 }
+
+

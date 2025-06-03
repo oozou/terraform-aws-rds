@@ -22,12 +22,12 @@ locals {
     | 1 | 1 | use custom kms */
   cloudwatch_log_group_kms_key_arn = var.cloudwatch_log_kms_key_arn != null ? var.cloudwatch_log_kms_key_arn : var.is_create_default_kms ? module.cloudwatch_log_group_kms[0].key_arn : null
 
-  postgres_db_creds = {
+  rds_db_creds = {
     host     = aws_db_instance.this[0].address
     port     = var.port
     username = var.username
     password = var.password
-    engine   = "postgres"
+    engine   = var.engine
   }
 
   tags = merge(

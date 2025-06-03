@@ -2,6 +2,11 @@
 
 All notable changes to this module will be documented in this file.
 
+## [2.2.0] - 2025-06-03
+### Added
+- manage_master_user_password option
+
+
 ## [2.1.4] - 2025-04-30
 ### Fixed
 

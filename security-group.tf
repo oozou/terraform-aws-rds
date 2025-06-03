@@ -5,7 +5,7 @@ resource "aws_security_group" "cluster" {
   count = var.is_create_db_instance && var.is_create_security_group ? 1 : 0
 
   name        = "${local.identifier}-sg"
-  description = "Security group for the ${local.identifier} postgresql"
+  description = "Security group for the ${local.identifier} DB"
   vpc_id      = var.vpc_id
 
   tags = merge(local.tags, { "Name" : "${local.identifier}-sg" })
@@ -16,7 +16,7 @@ resource "aws_security_group" "cluster" {
 /* -------------------------------------------------------------------------- */
 resource "aws_security_group" "client" {
   name        = "${local.identifier}-client-sg"
-  description = "Security group for the ${local.identifier} postgresql client"
+  description = "Security group for the ${local.identifier} DB client"
   vpc_id      = var.vpc_id
 
   tags = merge(local.tags, { "Name" : "${local.identifier}-client-sg" })

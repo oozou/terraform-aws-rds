@@ -24,17 +24,17 @@ module "rds_kms" {
   tags = local.tags
 }
 
-module "postgres_creds_kms_key" {
-  count = var.is_create_db_instance && var.storage_encrypted && var.is_create_secret? 1 : 0
+module "rds_creds_kms_key" {
+  count = var.is_create_db_instance && var.storage_encrypted && (var.is_create_secret || var.is_manage_master_user_password) ? 1 : 0
 
   source  = "oozou/kms-key/aws"
   version = "1.0.0"
 
   prefix               = var.prefix
   environment          = var.environment
-  name                 = "${var.name}-secret-postgres"
+  name                 = "${var.name}-secret-rds"
   key_type             = "service"
-  description          = "Used to encrypt data in ${local.identifier}-secret-postgres"
+  description          = "Used to encrypt data in ${local.identifier}-secret-rds"
   append_random_suffix = true
 
   service_key_info = {
