@@ -116,7 +116,8 @@ output "db_client_security_group_id" {
 }
 
 output "secret_manager_rds_creds_arn" {
-  value = var.is_manage_master_user_password ? aws_db_instance.this[0].master_user_secret[0].secret_arn : try(aws_secretsmanager_secret.rds_creds[0].arn, "")
+  value = try(aws_secretsmanager_secret.rds_creds[0].arn, "")
+  #var.is_manage_master_user_password ? aws_db_instance.this[0].master_user_secret[0].secret_arn : try(aws_secretsmanager_secret.rds_creds[0].arn, "")
 }
 
 
